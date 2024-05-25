@@ -1,5 +1,6 @@
 ﻿using Blood_donate_App_Backend.Contexts;
 using Blood_donate_App_Backend.Exceptions;
+using Blood_donate_App_Backend.Exceptions.Users_Exception;
 using Blood_donate_App_Backend.Interfaces;
 using Blood_donate_App_Backend.Models;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,10 @@ namespace Blood_donate_App_Backend.Repositories
                 }
                 throw new UserNotFoundException(id);
             }
+            catch (UserNotAddException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 throw new UserNotDeleteException();
@@ -59,6 +64,7 @@ namespace Blood_donate_App_Backend.Repositories
             }
         }
 
+
         public async Task<User> GetById(int id)
         {
             try
@@ -70,7 +76,12 @@ namespace Blood_donate_App_Backend.Repositories
                 }
                 throw new UserNotFoundException(id);
             }
-            catch(Exception ex)
+            catch (UserNotAddException)
+            {
+                throw;
+            }
+
+            catch (Exception ex)
             {
                 throw new UserNotGetException();
             }
@@ -89,7 +100,11 @@ namespace Blood_donate_App_Backend.Repositories
                 }
                 throw new UserNotFoundException(entity.Id);
             }
-            catch(Exception ex)
+            catch(UserNotAddException)
+            {
+                throw;
+            }
+            catch (Exception ex)
             {
                 throw new UserNotUpdateException();
             }

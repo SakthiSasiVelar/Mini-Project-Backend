@@ -1,4 +1,6 @@
-﻿namespace Blood_donate_App_Backend.Interfaces
+﻿using System.Linq;
+
+namespace Blood_donate_App_Backend.Interfaces
 {
     public interface IRepository<K,T> where T : class
     {
