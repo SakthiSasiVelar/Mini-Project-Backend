@@ -256,11 +256,8 @@ namespace Blood_donate_App_Backend.Migrations
 
             modelBuilder.Entity("Blood_donate_App_Backend.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -277,13 +274,15 @@ namespace Blood_donate_App_Backend.Migrations
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Gender")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -301,7 +300,7 @@ namespace Blood_donate_App_Backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Email");
 
                     b.ToTable("Users");
                 });
@@ -314,6 +313,10 @@ namespace Blood_donate_App_Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -325,12 +328,13 @@ namespace Blood_donate_App_Backend.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
+                    b.HasIndex("Email")
                         .IsUnique();
 
                     b.ToTable("UsersAuthDetails");
@@ -347,6 +351,7 @@ namespace Blood_donate_App_Backend.Migrations
                     b.HasOne("Blood_donate_App_Backend.Models.User", "User")
                         .WithMany("AdminForCenters")
                         .HasForeignKey("UserId")
+                        .HasPrincipalKey("Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -370,6 +375,7 @@ namespace Blood_donate_App_Backend.Migrations
                     b.HasOne("Blood_donate_App_Backend.Models.User", "User")
                         .WithMany("DonateHistory")
                         .HasForeignKey("UserId")
+                        .HasPrincipalKey("Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -391,6 +397,7 @@ namespace Blood_donate_App_Backend.Migrations
                     b.HasOne("Blood_donate_App_Backend.Models.User", "Donor")
                         .WithMany("Inventories")
                         .HasForeignKey("DonorId")
+                        .HasPrincipalKey("Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -404,6 +411,7 @@ namespace Blood_donate_App_Backend.Migrations
                     b.HasOne("Blood_donate_App_Backend.Models.User", "User")
                         .WithMany("RequestHistory")
                         .HasForeignKey("UserId")
+                        .HasPrincipalKey("Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -414,7 +422,7 @@ namespace Blood_donate_App_Backend.Migrations
                 {
                     b.HasOne("Blood_donate_App_Backend.Models.User", "User")
                         .WithOne("UserAuthDetails")
-                        .HasForeignKey("Blood_donate_App_Backend.Models.UserAuthDetails", "UserId")
+                        .HasForeignKey("Blood_donate_App_Backend.Models.UserAuthDetails", "Email")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

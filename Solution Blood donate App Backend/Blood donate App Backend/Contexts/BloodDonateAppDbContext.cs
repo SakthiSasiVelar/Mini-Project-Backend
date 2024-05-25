@@ -23,7 +23,8 @@ namespace Blood_donate_App_Backend.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasKey(user => user.Id);
+            modelBuilder.Entity<User>().HasKey(x => x.Id);
+            modelBuilder.Entity<User>().HasKey(u => u.Email);
             modelBuilder.Entity<UserAuthDetails>().HasKey(userAuthDetails => userAuthDetails.Id);
             modelBuilder.Entity<DonationCenter>().HasKey(donationCenter => donationCenter.Id);
             modelBuilder.Entity<CenterAdminRelation>().HasKey(centerAdmin => centerAdmin.Id);
@@ -31,16 +32,26 @@ namespace Blood_donate_App_Backend.Contexts
             modelBuilder.Entity<RequestBlood>().HasKey(request => request.Id);
             modelBuilder.Entity<DonateBlood>().HasKey(donate => donate.Id);
 
+            modelBuilder.Entity<User>()
+                .Property(u => u.Email)
+                .ValueGeneratedNever();
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.Id)
+                .ValueGeneratedOnAdd();
+
             modelBuilder.Entity<RequestBlood>()
                 .HasOne(rb => rb.User)
                 .WithMany(u => u.RequestHistory)
                 .HasForeignKey(rb => rb.UserId)
+                .HasPrincipalKey(u => u.Id)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<DonateBlood>()
                 .HasOne(db => db.User)
                 .WithMany(u => u.DonateHistory)
                 .HasForeignKey(db => db.UserId)
+                .HasPrincipalKey(u => u.Id)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<DonateBlood>()
@@ -58,7 +69,8 @@ namespace Blood_donate_App_Backend.Contexts
             modelBuilder.Entity<UserAuthDetails>()
                 .HasOne(uad => uad.User)
                 .WithOne(u => u.UserAuthDetails)
-                .HasForeignKey<UserAuthDetails>(uad => uad.UserId)
+                .HasForeignKey<UserAuthDetails>(uad => uad.Email)
+                .HasPrincipalKey<User>(u => u.Email)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Inventory>()
@@ -71,12 +83,14 @@ namespace Blood_donate_App_Backend.Contexts
                 .HasOne(i => i.Donor)
                 .WithMany(u => u.Inventories)
                 .HasForeignKey(i => i.DonorId)
+                .HasPrincipalKey(u => u.Id)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<CenterAdminRelation>()
                 .HasOne(ca => ca.User)
                 .WithMany(u => u.AdminForCenters)
                 .HasForeignKey(ca => ca.UserId)
+                .HasPrincipalKey(u => u.Id)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<CenterAdminRelation>()

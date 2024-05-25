@@ -32,10 +32,10 @@ namespace Blood_donate_App_Backend.Migrations
                 name: "Users",
                 columns: table => new
                 {
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     State = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -47,7 +47,8 @@ namespace Blood_donate_App_Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Email);
+                    table.UniqueConstraint("AK_Users_Id", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -147,8 +148,9 @@ namespace Blood_donate_App_Backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Password = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHashKey = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -156,10 +158,10 @@ namespace Blood_donate_App_Backend.Migrations
                 {
                     table.PrimaryKey("PK_UsersAuthDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UsersAuthDetails_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_UsersAuthDetails_Users_Email",
+                        column: x => x.Email,
                         principalTable: "Users",
-                        principalColumn: "Id",
+                        principalColumn: "Email",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -244,9 +246,9 @@ namespace Blood_donate_App_Backend.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UsersAuthDetails_UserId",
+                name: "IX_UsersAuthDetails_Email",
                 table: "UsersAuthDetails",
-                column: "UserId",
+                column: "Email",
                 unique: true);
         }
 
