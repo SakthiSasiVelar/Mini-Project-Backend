@@ -4,6 +4,7 @@ using Blood_donate_App_Backend.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blood_donate_App_Backend.Migrations
 {
     [DbContext(typeof(BloodDonateAppDbContext))]
-    partial class BloodDonateAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240526144732_changeRequestBloodModel")]
+    partial class changeRequestBloodModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -194,6 +196,9 @@ namespace Blood_donate_App_Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<bool>("Approved_Request")
+                        .HasColumnType("bit");
+
                     b.Property<string>("BloodType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -219,14 +224,6 @@ namespace Blood_donate_App_Backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HospitalName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PatientName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RequestApprovalStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

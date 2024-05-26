@@ -9,7 +9,7 @@ namespace Blood_donate_App_Backend.Repositories
 {
     public class UserRepository : IRepository<int, User>
     {
-        private readonly BloodDonateAppDbContext _dbContext;
+        protected readonly BloodDonateAppDbContext _dbContext;
         public UserRepository(BloodDonateAppDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -42,7 +42,7 @@ namespace Blood_donate_App_Backend.Repositories
                 }
                 throw new UserNotFoundException(id);
             }
-            catch (UserNotAddException)
+            catch (UserNotFoundException)
             {
                 throw;
             }
@@ -52,7 +52,7 @@ namespace Blood_donate_App_Backend.Repositories
             }
         }
 
-        public async Task<IEnumerable<User>> GetAll()
+        public virtual async Task<IEnumerable<User>> GetAll()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace Blood_donate_App_Backend.Repositories
         }
 
 
-        public async Task<User> GetById(int id)
+        public virtual async Task<User> GetById(int id)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace Blood_donate_App_Backend.Repositories
                 }
                 throw new UserNotFoundException(id);
             }
-            catch (UserNotAddException)
+            catch (UserNotFoundException)
             {
                 throw;
             }
@@ -91,16 +91,19 @@ namespace Blood_donate_App_Backend.Repositories
         {
             try
             {
-                var user = await GetById(entity.Id);
-                if(user != null)
+                var existingUser = await GetById(entity.Id);
+                if(existingUser != null)
                 {
-                    _dbContext.Users.Update(entity);
+                    _dbContext.Entry(existingUser).State = EntityState.Detached;
+                    _dbContext.Attach(entity);
+                    _dbContext.Entry(entity).State = EntityState.Modified;
                     await _dbContext.SaveChangesAsync();
+                    var user = await GetById(entity.Id);
                     return entity;
                 }
                 throw new UserNotFoundException(entity.Id);
             }
-            catch(UserNotAddException)
+            catch(UserNotFoundException)
             {
                 throw;
             }
