@@ -5,7 +5,6 @@ using Blood_donate_App_Backend.Exceptions.Users_Exception;
 using Blood_donate_App_Backend.Interfaces;
 using Blood_donate_App_Backend.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Blood_donate_App_Backend.Repositories
 {

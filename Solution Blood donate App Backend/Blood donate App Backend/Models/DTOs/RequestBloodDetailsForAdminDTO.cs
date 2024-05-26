@@ -1,17 +1,14 @@
-﻿namespace Blood_donate_App_Backend.Models
+﻿namespace Blood_donate_App_Backend.Models.DTOs
 {
-    
-    public class RequestBlood
+    public class RequestBloodDetailsForAdminDTO
     {
-        public int Id { get; set; }
+        public int RequestId { get; set; }
 
-        public int UserId { get; set; }
-
-        public User User { get; set; }
-
-        public string BloodType { get; set; }
+        public int RequestedUserId { get; set; }
 
         public string PatientName { get; set; }
+
+        public string BloodType { get; set; }
 
         public string RhFactor { get; set; }
 
@@ -38,7 +35,5 @@
         public string DoctorName { get; set; }
 
         public string DoctorContactNumber { get; set; }
-
-        public ICollection<DonateBlood> BloodDonations { get; set; }
     }
 }

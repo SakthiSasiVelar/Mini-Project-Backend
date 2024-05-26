@@ -9,7 +9,7 @@ namespace Blood_donate_App_Backend.Repositories
 {
     public class DonationCenterRepository : IRepository<int,DonationCenter>
     {
-        private readonly BloodDonateAppDbContext _dbContext;
+        protected readonly BloodDonateAppDbContext _dbContext;
         public DonationCenterRepository(BloodDonateAppDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -42,13 +42,17 @@ namespace Blood_donate_App_Backend.Repositories
                 }
                 throw new BloodDonationCenterNotFoundException(id);
             }
+            catch (BloodDonationCenterNotFoundException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 throw new BloodDonationCenterNotDeleteException();
             }
         }
 
-        public async Task<IEnumerable<DonationCenter>> GetAll()
+        public virtual async Task<IEnumerable<DonationCenter>> GetAll()
         {
             try
             {
@@ -60,7 +64,7 @@ namespace Blood_donate_App_Backend.Repositories
             }
         }
 
-        public async Task<DonationCenter> GetById(int id)
+        public virtual async Task<DonationCenter> GetById(int id)
         {
             try
             {
@@ -70,6 +74,10 @@ namespace Blood_donate_App_Backend.Repositories
                     return entity;
                 }
                 throw new BloodDonationCenterNotFoundException(id);
+            }
+            catch (BloodDonationCenterNotFoundException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -89,6 +97,10 @@ namespace Blood_donate_App_Backend.Repositories
                     return entity;
                 }
                 throw new BloodDonationCenterNotFoundException(entity.Id);
+            }
+            catch (BloodDonationCenterNotFoundException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

@@ -42,6 +42,10 @@ namespace Blood_donate_App_Backend.Repositories
                 }
                 throw new CenterAdminRelationsNotFoundException(id);
             }
+            catch (CenterAdminRelationsNotFoundException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 throw new CenterAdminRelationsNotDeleteException();
@@ -71,6 +75,10 @@ namespace Blood_donate_App_Backend.Repositories
                 }
                 throw new CenterAdminRelationsNotFoundException(id);
             }
+            catch (CenterAdminRelationsNotFoundException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 throw new CenterAdminRelationsNotGetException();
@@ -89,6 +97,10 @@ namespace Blood_donate_App_Backend.Repositories
                     return entity;
                 }
                 throw new CenterAdminRelationsNotFoundException(entity.Id);
+            }
+            catch (CenterAdminRelationsNotFoundException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

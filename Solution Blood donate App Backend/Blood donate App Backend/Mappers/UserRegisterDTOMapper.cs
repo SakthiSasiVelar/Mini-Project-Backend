@@ -18,10 +18,13 @@ namespace Blood_donate_App_Backend.Mappers
                 City = userRegisterDTO.City,
                 State = userRegisterDTO.State,
                 Address = userRegisterDTO.Address,
-                Role = userRegisterDTO.Role,
                 ContactNumber = userRegisterDTO.ContactNumber,
                 PostalCode = userRegisterDTO.PostalCode,
             };
+            var role = userRegisterDTO.Role.ToLower();
+            if(role == "member") user.Role = EnumClass.Roles.Member.ToString();
+            else if(role == "center admin") user.Role = EnumClass.Roles.CenterAdmin.ToString();
+            else if(role == "admin")user.Role = EnumClass.Roles.Admin.ToString();
             return user;
         }
 

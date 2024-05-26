@@ -102,6 +102,24 @@ namespace Blood_donate_App_Backend.Services
 
         }
 
+        public async Task<UserUpdateReturnDTO> UpdateUser(UserUpdateDTO userUpdateDTO)
+        {
+            try
+            {
+                var user = await new UserUpdateDTOMapper().UserUpdateDTOtoUser(userUpdateDTO);
+                var updatedUser = await _userRepository.Update(user);
+                return await new UserMapper().UsertoUpdateReturnDTO(updatedUser);
+            }
+            catch (UserNotFoundException)
+            {
+                throw;
+            }
+            catch(Exception ex)
+            {
+                throw new UserNotUpdateException();
+            }
+        }
+
         private async Task<bool> IsValidEmail(User newUser)
         {
             try
@@ -154,5 +172,7 @@ namespace Blood_donate_App_Backend.Services
             }
             return true;
        }
+
+        
     }
 }

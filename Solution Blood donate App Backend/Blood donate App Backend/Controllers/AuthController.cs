@@ -18,6 +18,7 @@ namespace Blood_donate_App_Backend.Controllers
 
         [HttpPost("user/Register")]
         [ProducesResponseType(typeof(UserRegisterReturnDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserRegisterReturnDTO>> Register([FromBody]UserRegisterDTO userRegisterDTO)
@@ -25,12 +26,7 @@ namespace Blood_donate_App_Backend.Controllers
             try
             {
                 var result = await _userService.RegisterUser(userRegisterDTO);
-                var response = new
-                {
-                    message = "User created successfully",
-                    data = result
-                };
-
+                var response = new SuccessResponseModel<UserRegisterReturnDTO>(201 , "User created successfully", result );
                 return Created($"/api/users/{result.Email}", response);
             }
             catch(EmailAlreadyTakenException ex)
@@ -47,6 +43,7 @@ namespace Blood_donate_App_Backend.Controllers
 
         [HttpPost("user/login")]
         [ProducesResponseType(typeof(LoginReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
@@ -55,12 +52,7 @@ namespace Blood_donate_App_Backend.Controllers
             try
             {
                 var result = await _userService.LoginUser(loginDTO);
-                var response = new
-                {
-                    message = "Login successful",
-                    data = result
-                };
-
+                var response = new SuccessResponseModel<LoginReturnDTO>(200 , "Login successful" , result);
                 return Ok(response);
             }
             catch(InvalidEmailPasswordException ex)

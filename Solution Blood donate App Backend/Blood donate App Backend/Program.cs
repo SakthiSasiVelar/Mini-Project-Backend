@@ -83,6 +83,8 @@ namespace Blood_donate_App_Backend
             #region Services
             builder.Services.AddScoped<IUserService, UserServiceBL>();
             builder.Services.AddScoped<ITokenService, TokenServiceBL>();
+            builder.Services.AddScoped<IAdminService, AdminServiceBL>();
+            builder.Services.AddScoped<IRequestService, RequestServiceBL>();
             #endregion
 
             var app = builder.Build();

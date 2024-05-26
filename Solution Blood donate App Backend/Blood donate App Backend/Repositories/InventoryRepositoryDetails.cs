@@ -42,6 +42,10 @@ namespace Blood_donate_App_Backend.Repositories
                 }
                 throw new InventoryNotFoundException(id);
             }
+            catch (InventoryNotFoundException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 throw new InventoryNotDeleteException();
@@ -71,6 +75,10 @@ namespace Blood_donate_App_Backend.Repositories
                 }
                 throw new InventoryNotFoundException(id);
             }
+            catch (InventoryNotFoundException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 throw new InventoryNotGetException();
@@ -89,6 +97,10 @@ namespace Blood_donate_App_Backend.Repositories
                     return entity;
                 }
                 throw new InventoryNotFoundException(entity.Id);
+            }
+            catch (InventoryNotFoundException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

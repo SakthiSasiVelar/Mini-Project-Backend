@@ -41,6 +41,10 @@ namespace Blood_donate_App_Backend.Repositories
                 }
                 throw new BloodDonateDetailsNotFoundException(id);
             }
+            catch (BloodDonateDetailsNotFoundException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 throw new BloodDonateDetailsNotDeleteException();
@@ -70,6 +74,10 @@ namespace Blood_donate_App_Backend.Repositories
                 }
                 throw new BloodDonateDetailsNotFoundException(id);
             }
+            catch (BloodDonateDetailsNotFoundException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 throw new BloodDonateDetailsNotGetException();
@@ -88,6 +96,10 @@ namespace Blood_donate_App_Backend.Repositories
                     return entity;
                 }
                 throw new BloodDonateDetailsNotFoundException(entity.Id);
+            }
+            catch (BloodDonateDetailsNotFoundException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
