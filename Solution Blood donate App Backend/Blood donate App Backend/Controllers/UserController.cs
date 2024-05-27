@@ -19,7 +19,7 @@ namespace Blood_donate_App_Backend.Controllers
         }
 
         [Authorize]
-        [HttpPut("user/updateProfile")]
+        [HttpPut("user/updateProfile/{id}")]
         [ProducesResponseType(typeof(UserUpdateReturnDTO) , StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
@@ -38,7 +38,7 @@ namespace Blood_donate_App_Backend.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new ErrorModel(500,ex.Message));
+                return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
 

@@ -1,10 +1,12 @@
 ﻿namespace Blood_donate_App_Backend.Models.DTOs
 {
-    public class BloodRequestReturnDTO
+    public class RejectBloodRequestReturnDTO
     {
         public int RequestId { get; set; }
 
         public int RequestedUserId { get; set; }
+
+        public string RejectedReason { get; set; }
 
         public string PatientName { get; set; }
 
@@ -36,6 +38,6 @@
 
         public string FulfillmentStatus { get; set; }
 
-       
+
     }
 }

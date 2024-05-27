@@ -29,5 +29,43 @@ namespace Blood_donate_App_Backend.Services
                 throw new BloodRequestDetailsNotAddException();
             }
         }
+
+        public async Task<List<RequestBloodDetailsForAdminDTO>> GetAllPendingRequest()
+        {
+            try
+            {
+                var listOfRequests = await _bloodRequestRepository.GetAll();
+                List<RequestBlood> pendingRequestList = new List<RequestBlood>();
+                string approvalStatus = EnumClass.RequestApprovalStatus.Pending.ToString();
+                foreach (var request in listOfRequests)
+                {
+                    if (request.RequestApprovalStatus == approvalStatus) pendingRequestList.Add(request);
+                }
+                return await new RequestBloodMapper().RequestBloodtoRequestBloodDetailsForAdminDTO(pendingRequestList);
+            }
+            catch (Exception ex)
+            {
+                throw new BloodRequestDetailsListNotFoundException();
+            }
+        }
+
+        public async Task<List<BloodRequestReturnDTO>> GetAllApprovedRequest()
+        {
+            try
+            {
+                var listOfRequests = await _bloodRequestRepository.GetAll();
+                List<RequestBlood> approvedRequestList = new List<RequestBlood>();
+                string approvalStatus = EnumClass.RequestApprovalStatus.Approved.ToString();
+                foreach (var request in listOfRequests)
+                {
+                    if (request.RequestApprovalStatus == approvalStatus) approvedRequestList.Add(request);
+                }
+                return await new RequestBloodMapper().RequestBloodtoBloodRequestReturnListDTO(approvedRequestList);
+            }
+            catch (Exception ex)
+            {
+                throw new BloodRequestDetailsListNotFoundException();
+            }
+        }
     }
 }

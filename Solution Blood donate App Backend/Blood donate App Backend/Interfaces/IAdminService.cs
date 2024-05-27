@@ -6,6 +6,10 @@ namespace Blood_donate_App_Backend.Interfaces
     {
         public Task<ActivateAdminReturnDTO> ActivateAdmin(int id);
 
-        public Task<List<RequestBloodDetailsForAdminDTO>> GetAllPendingRequest();
+       
+
+        public Task<ApprovedBloodRequestReturnDTO> ApproveRequest(int id);
+
+        public Task<RejectBloodRequestReturnDTO> RejectRequest(RejectBloodRequestDTO rejectBloodRequestDTO);
     }
 }
