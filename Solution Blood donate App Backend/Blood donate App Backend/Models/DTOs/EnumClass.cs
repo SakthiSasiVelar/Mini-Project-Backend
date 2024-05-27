@@ -28,5 +28,18 @@
             Pending,
             Rejected
         }
+
+        public enum DonationStatus
+        {
+            NotDonated,
+            Donated,
+            Rejected,   
+        }
+
+        public enum DonationType
+        {
+            Requester,
+            Center
+        }
     }
 }

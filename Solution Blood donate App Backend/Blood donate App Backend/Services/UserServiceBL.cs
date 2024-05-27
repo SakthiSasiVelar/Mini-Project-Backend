@@ -55,13 +55,13 @@ namespace Blood_donate_App_Backend.Services
             }
             finally
             {
-                if(addedUser != null && addedUserAuth == null)
-                {
-                    await RevertUserRegister(addedUser.Id);
-                }
-                else if(addedUser == null && addedUserAuth != null)
+                if(addedUser == null && addedUserAuth != null)
                 {
                     await RevertUserAuthRegister(addedUserAuth.Id);
+                }
+                else if (addedUser != null && addedUserAuth == null)
+                {
+                    await RevertUserRegister(addedUser.Id);
                 }
             }
         }

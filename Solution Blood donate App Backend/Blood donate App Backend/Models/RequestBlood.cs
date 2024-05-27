@@ -39,6 +39,8 @@
 
         public string DoctorContactNumber { get; set; }
 
+        public string? RejectReason { get; set; }
+
         public ICollection<DonateBlood> BloodDonations { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Blood_donate_App_Backend.Exceptions;
+using Blood_donate_App_Backend.Exceptions.BloodRequest_Exception;
 using Blood_donate_App_Backend.Exceptions.UserAuthDetails_Exception;
 using Blood_donate_App_Backend.Interfaces;
 using Blood_donate_App_Backend.Models.DTOs;
@@ -19,7 +20,7 @@ namespace Blood_donate_App_Backend.Controllers
         }
 
         [Authorize(Roles = AdminRole)]
-        [HttpPut("admin/activateAdmin")]
+        [HttpPut("admin/activateAdmin/{id}")]
         [ProducesResponseType(typeof(ActivateAdminReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
@@ -42,28 +43,57 @@ namespace Blood_donate_App_Backend.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(new ErrorModel(500,ex.Message));
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
+
+
+        [Authorize(Roles = AdminRole)]
+        [HttpPut("request/approveRequest/{id}")]
+        [ProducesResponseType(typeof(ApprovedBloodRequestReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ApprovedBloodRequestReturnDTO>> ApproveRequest(int id)
+        {
+            try
+            {
+                var result = await _adminService.ApproveRequest(id);
+                var response = new SuccessResponseModel<ApprovedBloodRequestReturnDTO>(200, "Request approved successfully", result);
+                return Ok(response);
+            }
+            catch (BloodRequestDetailsNotFoundException ex)
+            {
+                return NotFound(new ErrorModel(404, ex.Message));
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500,new ErrorModel(500, ex.Message));
             }
         }
 
         [Authorize(Roles = AdminRole)]
-        [HttpGet("request/pendingRequest")]
-        [ProducesResponseType(typeof(ActivateAdminReturnDTO), StatusCodes.Status200OK)]
+        [HttpPut("request/rejectRequest/{id}")]
+        [ProducesResponseType(typeof(RejectBloodRequestReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<RequestBloodDetailsForAdminDTO>>> GetPendingRequest()
+        public async Task<ActionResult<RejectBloodRequestReturnDTO>> RejectRequest([FromBody] RejectBloodRequestDTO rejectBloodRequestDTO )
         {
             try
             {
-                var result = await _adminService.GetAllPendingRequest();
-                var response = new SuccessResponseModel<List<RequestBloodDetailsForAdminDTO>>(200, "All Pending requests fetched successfully", result);
+                var result = await _adminService.RejectRequest(rejectBloodRequestDTO);
+                var response = new SuccessResponseModel<RejectBloodRequestReturnDTO>(200, "Request rejected successfully", result);
                 return Ok(response);
             }
-            catch(Exception ex)
+            catch (BloodRequestDetailsNotFoundException ex)
             {
-                return BadRequest(new ErrorModel(500, ex.Message));
+                return NotFound(new ErrorModel(404, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
     }
 }

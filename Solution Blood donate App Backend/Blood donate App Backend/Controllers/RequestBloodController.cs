@@ -11,6 +11,7 @@ namespace Blood_donate_App_Backend.Controllers
     {
         private readonly IRequestService _requestService;
         private const string MemberRole = "Member";
+        private const string AdminRole = "Admin";
 
         public RequestBloodController(IRequestService requestService)
         {
@@ -19,7 +20,7 @@ namespace Blood_donate_App_Backend.Controllers
 
         [Authorize(Roles = MemberRole)]
         [HttpPost("request/addRequest")]
-        [ProducesResponseType(typeof(BloodRequestReturnDTO) , StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BloodRequestReturnDTO) , StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<BloodRequestReturnDTO>> AddRequest([FromBody]BloodRequestDTO bloodRequestDTO)
@@ -32,7 +33,45 @@ namespace Blood_donate_App_Backend.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(new ErrorModel(500,ex.Message));
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
+
+        [Authorize(Roles = AdminRole)]
+        [HttpGet("request/pendingRequest")]
+        [ProducesResponseType(typeof(List<RequestBloodDetailsForAdminDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<RequestBloodDetailsForAdminDTO>>> GetPendingRequest()
+        {
+            try
+            {
+                var result = await _requestService.GetAllPendingRequest();
+                var response = new SuccessResponseModel<List<RequestBloodDetailsForAdminDTO>>(200, "All Pending requests fetched successfully", result);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
+
+        [Authorize(Roles = MemberRole)]
+        [HttpGet("request/approvedRequest")]
+        [ProducesResponseType(typeof(List<BloodRequestReturnDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<BloodRequestReturnDTO>>> GetApprovedRequest()
+        {
+            try
+            {
+                var result = await _requestService.GetAllApprovedRequest();
+                var response = new SuccessResponseModel<List<BloodRequestReturnDTO>>(200, "All approved requests fetched successfully", result);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
     }

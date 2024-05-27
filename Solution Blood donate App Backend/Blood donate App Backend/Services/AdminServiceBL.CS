@@ -46,22 +46,46 @@ namespace Blood_donate_App_Backend.Services
             }
         }
 
-        public async Task<List<RequestBloodDetailsForAdminDTO>> GetAllPendingRequest()
+        
+
+        public async Task<ApprovedBloodRequestReturnDTO> ApproveRequest(int id)
         {
             try
             {
-                var listOfRequests = await _requestBloodRepository.GetAll();
-                List<RequestBlood> pendingRequestList = new List<RequestBlood>();
-                string approvalStatus = EnumClass.RequestApprovalStatus.Pending.ToString();
-                foreach (var request in listOfRequests)
-                {
-                    if (request.RequestApprovalStatus == approvalStatus) pendingRequestList.Add(request);
-                }
-                return await new RequestBloodMapper().RequestBloodtoRequestBloodDetailsForAdminDTO(pendingRequestList);
+                var request = await _requestBloodRepository.GetById(id);
+                request.RequestApprovalStatus = EnumClass.RequestApprovalStatus.Approved.ToString();
+                var updatedRequest = await _requestBloodRepository.Update(request);
+                return await new RequestBloodMapper().RequestBloodtoApprovedBloodRequestReturnDTO(updatedRequest);
+
             }
-            catch(Exception ex)
+            catch(BloodRequestDetailsNotFoundException)
             {
-                throw new BloodRequestDetailsListNotFoundException();
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new RequestApprovalException(id);
+            }
+        }
+
+        public async Task<RejectBloodRequestReturnDTO> RejectRequest(RejectBloodRequestDTO rejectBloodRequestDTO)
+        {
+            try
+            {
+                var request = await _requestBloodRepository.GetById(rejectBloodRequestDTO.Id);
+                request.RequestApprovalStatus = EnumClass.RequestApprovalStatus.Rejected.ToString();
+                request.RejectReason = rejectBloodRequestDTO.RejectReason;
+                var updatedRequest = await _requestBloodRepository.Update(request);
+                return await new RequestBloodMapper().RequestBloodtoRejectBloodRequestReturnDTO(updatedRequest);
+
+            }
+            catch (BloodRequestDetailsNotFoundException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new RequestApprovalException(rejectBloodRequestDTO.Id);
             }
         }
     }
