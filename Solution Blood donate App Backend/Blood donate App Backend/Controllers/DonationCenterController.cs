@@ -1,4 +1,5 @@
-﻿using Blood_donate_App_Backend.Interfaces;
+﻿using Blood_donate_App_Backend.Exceptions.Blood_Donation_Center_Exception;
+using Blood_donate_App_Backend.Interfaces;
 using Blood_donate_App_Backend.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +28,29 @@ namespace Blood_donate_App_Backend.Controllers
                 return Ok(response);
             }
             catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
+
+        [HttpGet("donationCenter/getAllBloodUnits/{centerId}")]
+        [ProducesResponseType(typeof(DonateBloodForApproveDonationReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<DonationCenterAllBloodUnitsReturnDTO>> GetAllBloodUnitsByCenterId(int centerId)
+        {
+            try
+            {
+                var result = await _donationCenterService.GetDonationCenterBloodUnitsById(centerId);
+                var response = new SuccessResponseModel<DonationCenterAllBloodUnitsReturnDTO>(200,"Blood units details fetched successfully",result);
+                return Ok(response);
+            }
+            catch(BloodDonationCenterNotFoundException ex)
+            {
+                return NotFound(new ErrorModel(404 , ex.Message));
+            }
+            catch(Exception ex)
             {
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }

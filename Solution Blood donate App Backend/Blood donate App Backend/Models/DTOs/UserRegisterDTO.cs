@@ -22,6 +22,9 @@
 
         public string Role { get; set; }
 
+        public int CenterId { get; set; } = -1;
+
         public string Password { get; set; }
+ 
     }
 }

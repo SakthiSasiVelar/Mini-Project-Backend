@@ -13,15 +13,36 @@ namespace Blood_donate_App_Backend.Services
         private readonly IRepository<int, DonateBlood> _donateRepository;
         private readonly IRepository<int, RequestBlood> _requestBloodRepository;
         private readonly RequestBloodDonationRepository _requestBloodDonationRepository;
+        private readonly DonationCenterBloodDonationRepository _donationCenterBloodDonationRepository;
 
-        public DonateServiceBL(IRepository<int, DonateBlood> donateRepository , IRepository<int, RequestBlood> requestBloodRepository, RequestBloodDonationRepository requestBloodDonationRepository)
+        public DonateServiceBL(IRepository<int, DonateBlood> donateRepository , IRepository<int, RequestBlood> requestBloodRepository, DonationCenterBloodDonationRepository donationCenterBloodDonationRepository, RequestBloodDonationRepository requestBloodDonationRepository)
         {
             _donateRepository = donateRepository;
             _requestBloodRepository = requestBloodRepository;
             _requestBloodDonationRepository = requestBloodDonationRepository;
+            _donationCenterBloodDonationRepository = donationCenterBloodDonationRepository;
         }
 
-        public async Task<DonateBloodForApproveDonationReturnDTO> ApproveDonation(int donationId)
+        public async Task<DonateBloodForApproveDonationByCenterReturnDTO> ApproveDonationByCenter(int donationId)
+        {
+            try
+            {
+                var donateBloodDetails = await _donateRepository.GetById(donationId);
+                donateBloodDetails.DonationStatus = EnumClass.DonationStatus.Donated.ToString();
+                var updatedDonateBloodDetails = await _donateRepository.Update(donateBloodDetails);
+                return await new DonateBloodMapper().DonateBloodToDonateBloodForApproveDonationByCenterReturnDTO(updatedDonateBloodDetails);
+            }
+            catch(BloodDonateDetailsNotFoundException)
+            {
+                throw;
+            }
+            catch(Exception ex)
+            {
+                throw new ApproveDonationException(donationId);
+            }
+        }
+
+        public async Task<DonateBloodForApproveDonationReturnDTO> ApproveDonationByRequester(int donationId)
         {
             try
             {
@@ -59,7 +80,23 @@ namespace Blood_donate_App_Backend.Services
             }
         }
 
-        public async Task<DonateBloodForRequestReturnDTO> DonateBlood(DonateBloodForRequestDTO donateBloodForRequestDTO)
+
+
+        public async Task<DonateBloodForCenterReturnDTO> DonateBloodToCenter(DonateBloodForCenterDTO donateBloodForCenterDTO)
+        {
+            try
+            {
+                var donateBloodDetails = await new DonateBloodForCenterDTOMapper().DonateBloodForCenterDTOtoDonateBlood(donateBloodForCenterDTO);
+                var addedDonateBloodDetails = await _donateRepository.Add(donateBloodDetails);
+                return await new DonateBloodMapper().DonateBloodtoDonateBloodForCenterReturnDTO(addedDonateBloodDetails);
+            }
+            catch(Exception ex)
+            {
+                throw new BloodDonateDetailsNotAddException();
+            }
+        }
+
+        public async Task<DonateBloodForRequestReturnDTO> DonateBloodToRequester(DonateBloodForRequestDTO donateBloodForRequestDTO)
         {
             try
             {
@@ -73,7 +110,7 @@ namespace Blood_donate_App_Backend.Services
             }
         }
 
-        public async Task<List<DonateBloodForRequestReturnDTO>> NotDonatedBloodDetailsList(int requestId)
+        public async Task<List<DonateBloodForRequestReturnDTO>> NotDonatedBloodDetailsListForRequester(int requestId)
         {
             try
             {
@@ -82,14 +119,39 @@ namespace Blood_donate_App_Backend.Services
                 string notDonated = EnumClass.DonationStatus.NotDonated.ToString();
                 foreach(var donateBloodDetails in request.BloodDonations)
                 {
-                    if (donateBloodDetails.DonationStatus == notDonated) notDonateBloodList.Add(donateBloodDetails);
+                    if (donateBloodDetails.DonationType == EnumClass.DonationType.Requester.ToString() && donateBloodDetails.DonationStatus == notDonated)
+                    {
+                        notDonateBloodList.Add(donateBloodDetails);
+                    }
                 }
                 return await new DonateBloodMapper().DonateBloodtoDonateBloodForRequestReturnDTOList(notDonateBloodList);
 
             }
             catch(Exception ex)
             {
-                throw new NotDonatedBloodListGetException(requestId);
+                throw new NotDonatedBloodListForRequestIdGetException(requestId);
+            }
+        }
+
+        public async Task<List<DonateBloodForCenterReturnDTO>> NotDonatedBloodDetailsListForCenter(int centerId)
+        {
+            try
+            {
+                var center = await _donationCenterBloodDonationRepository.GetById(centerId);
+                List<DonateBlood> notDonatedBloodList = new List<DonateBlood>();
+                string notDonated = EnumClass.DonationStatus.NotDonated.ToString();
+                foreach(var donateBloodDetails in center.BloodDonations)
+                {
+                    if (donateBloodDetails.DonationType == EnumClass.DonationType.Center.ToString() && donateBloodDetails.DonationStatus == notDonated)
+                    {
+                        notDonatedBloodList.Add(donateBloodDetails);
+                    }
+                }
+                return await new DonateBloodMapper().DonateBloodtoDonateBloodForCenterReturnDTOList(notDonatedBloodList);
+            }
+            catch(Exception ex)
+            {
+                throw new NotdonatedBloodListForCenterIdException(centerId);
             }
         }
     }

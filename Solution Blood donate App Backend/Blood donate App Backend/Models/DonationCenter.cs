@@ -22,7 +22,7 @@
 
         public ICollection<DonateBlood> BloodDonations { get; set; }
 
-        public CenterAdminRelation centerAdminRelation { get; set; }
+        public ICollection<CenterAdminRelation> Admins { get; set; }
 
     }
 }
