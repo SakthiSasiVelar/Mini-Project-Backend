@@ -95,8 +95,8 @@ namespace Blood_donate_App_Backend.Contexts
 
             modelBuilder.Entity<CenterAdminRelation>()
                 .HasOne(ca => ca.DonationCenter)
-                .WithOne(dc => dc.centerAdminRelation)
-                .HasForeignKey<CenterAdminRelation>(ca => ca.CenterId)
+                .WithMany(dc => dc.Admins)
+                .HasForeignKey(ca => ca.CenterId)
                 .OnDelete(DeleteBehavior.Restrict);
 
         }

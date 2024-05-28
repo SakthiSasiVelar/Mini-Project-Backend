@@ -79,6 +79,7 @@ namespace Blood_donate_App_Backend
             builder.Services.AddScoped<IRepository<int,CenterAdminRelation>, CenterAdminRelationRepository>();
             builder.Services.AddScoped<IRepository<int, Inventory>, InventoryRepositoryDetails>();
             builder.Services.AddScoped<RequestBloodDonationRepository ,  RequestBloodDonationRepository>();
+            builder.Services.AddScoped<DonationCenterBloodDonationRepository , DonationCenterBloodDonationRepository>();
             #endregion
 
             #region Services
@@ -88,6 +89,8 @@ namespace Blood_donate_App_Backend
             builder.Services.AddScoped<IRequestService, RequestServiceBL>();
             builder.Services.AddScoped<IDonateService, DonateServiceBL>();
             builder.Services.AddScoped<IDonationCenterService, DonationCenterServiceBL>();
+            builder.Services.AddScoped<IInventoryService, InventoryServiceBL>();
+            builder.Services.AddScoped<DonationCenterInventoryRepository, DonationCenterInventoryRepository>();
             #endregion
 
             var app = builder.Build();

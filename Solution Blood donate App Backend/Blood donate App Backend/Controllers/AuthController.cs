@@ -1,4 +1,5 @@
-﻿using Blood_donate_App_Backend.Exceptions.Users_Exception;
+﻿using Blood_donate_App_Backend.Exceptions.Blood_Donation_Center_Exception;
+using Blood_donate_App_Backend.Exceptions.Users_Exception;
 using Blood_donate_App_Backend.Interfaces;
 using Blood_donate_App_Backend.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,7 @@ namespace Blood_donate_App_Backend.Controllers
         [HttpPost("user/Register")]
         [ProducesResponseType(typeof(UserRegisterReturnDTO), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserRegisterReturnDTO>> Register([FromBody]UserRegisterDTO userRegisterDTO)
@@ -33,6 +35,10 @@ namespace Blood_donate_App_Backend.Controllers
             {
                
                 return Conflict(new ErrorModel(409, ex.Message));
+            }
+            catch(DonationCenterNotavailableException ex)
+            {
+                return NotFound(new ErrorModel(404, ex.Message));
             }
             catch(Exception ex)
             {

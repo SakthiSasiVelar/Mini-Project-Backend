@@ -4,10 +4,16 @@ namespace Blood_donate_App_Backend.Interfaces
 {
     public interface IDonateService
     {
-        public Task<DonateBloodForRequestReturnDTO> DonateBlood(DonateBloodForRequestDTO donateBloodForRequestDTO);
+        public Task<DonateBloodForRequestReturnDTO> DonateBloodToRequester(DonateBloodForRequestDTO donateBloodForRequestDTO);
 
-        public Task<List<DonateBloodForRequestReturnDTO>> NotDonatedBloodDetailsList(int requestId);
+        public Task<DonateBloodForCenterReturnDTO> DonateBloodToCenter(DonateBloodForCenterDTO donateBloodForCenterDTO);
 
-        public Task<DonateBloodForApproveDonationReturnDTO> ApproveDonation(int donationId);
+        public Task<List<DonateBloodForRequestReturnDTO>> NotDonatedBloodDetailsListForRequester(int requestId);
+
+        public Task<List<DonateBloodForCenterReturnDTO>> NotDonatedBloodDetailsListForCenter(int centerId);
+
+        public Task<DonateBloodForApproveDonationReturnDTO> ApproveDonationByRequester(int donationId);
+
+        public Task<DonateBloodForApproveDonationByCenterReturnDTO> ApproveDonationByCenter(int donationId);
     }
 }

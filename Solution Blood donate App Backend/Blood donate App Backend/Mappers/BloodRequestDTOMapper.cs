@@ -10,9 +10,7 @@ namespace Blood_donate_App_Backend.Mappers
             RequestBlood request = new RequestBlood()
             {
                 UserId = bloodRequestDTO.UserId,
-                BloodType = bloodRequestDTO.BloodType,
                 PatientName = bloodRequestDTO.PatientName,
-                RhFactor = bloodRequestDTO.RhFactor,
                 UnitsNeeded = bloodRequestDTO.UnitsNeeded,
                 RequestedDateTime = bloodRequestDTO.RequestedDateTime,
                 DoctorName = bloodRequestDTO.DoctorName,
@@ -34,6 +32,17 @@ namespace Blood_donate_App_Backend.Mappers
             {
                 request.Urgency = EnumClass.Urgency.WithinAWeek.ToString();
             }
+
+            var BloodType = bloodRequestDTO.BloodType.ToLower();
+            if(BloodType == "a") request.BloodType = EnumClass.BloodType.A.ToString();
+            else if(BloodType == "b") request.BloodType = EnumClass.BloodType.B.ToString();
+            else if(BloodType == "ab") request.BloodType = EnumClass.BloodType.AB.ToString();
+            else if(BloodType == "o")request.BloodType = EnumClass.BloodType.O.ToString();
+
+            var RhFactor = bloodRequestDTO.RhFactor.ToLower();
+            if(RhFactor == "positive") request.RhFactor = EnumClass.RhFactor.positive.ToString();
+            else if(RhFactor == "negative") request.RhFactor = EnumClass.RhFactor.negative.ToString();
+
             return request;
         }
     }

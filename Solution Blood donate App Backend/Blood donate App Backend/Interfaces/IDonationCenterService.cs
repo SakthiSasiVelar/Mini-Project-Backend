@@ -5,5 +5,7 @@ namespace Blood_donate_App_Backend.Interfaces
     public interface IDonationCenterService
     {
         public Task<DonationCenterReturnDTO> addDonationCenter(DonationCenterDTO donationCenterDTO);
+
+        public Task<DonationCenterAllBloodUnitsReturnDTO> GetDonationCenterBloodUnitsById(int centerId);
     }
 }

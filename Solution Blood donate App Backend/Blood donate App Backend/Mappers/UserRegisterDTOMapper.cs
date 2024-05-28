@@ -33,11 +33,14 @@ namespace Blood_donate_App_Backend.Mappers
             UserAuthDetails userAuthDetails = new UserAuthDetails();
             HMACSHA512 hMACSHA = new HMACSHA512();
             userAuthDetails.Email = userRegisterDTO.Email;
-            userAuthDetails.Role = userRegisterDTO.Role;
             userAuthDetails.PasswordHashKey = hMACSHA.Key;
             userAuthDetails.Password = hMACSHA.ComputeHash(Encoding.UTF8.GetBytes(userRegisterDTO.Password));
             if(userRegisterDTO.Role == "Member") userAuthDetails.IsActive = true;
             else userAuthDetails.IsActive = false;
+            var role = userRegisterDTO.Role.ToLower();
+            if (role == "member") userAuthDetails.Role = EnumClass.Roles.Member.ToString();
+            else if (role == "center admin") userAuthDetails.Role = EnumClass.Roles.CenterAdmin.ToString();
+            else if (role == "admin") userAuthDetails.Role = EnumClass.Roles.Admin.ToString();
             return userAuthDetails;
         }
     }

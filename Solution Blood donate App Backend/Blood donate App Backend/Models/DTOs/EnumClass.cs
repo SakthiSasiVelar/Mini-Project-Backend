@@ -41,5 +41,20 @@
             Requester,
             Center
         }
+
+        public enum BloodType
+        {
+            A,
+            B,
+            AB,
+            O
+        }
+
+        public enum RhFactor
+        { 
+            positive,
+            negative
+        }
+
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Blood_donate_App_Backend.Exceptions;
+using Blood_donate_App_Backend.Exceptions.Blood_Donation_Center_Exception;
+using Blood_donate_App_Backend.Exceptions.Center_Admin_Relation_Exceptions;
 using Blood_donate_App_Backend.Exceptions.UserAuthDetails_Exception;
 using Blood_donate_App_Backend.Exceptions.Users_Exception;
 using Blood_donate_App_Backend.Interfaces;
@@ -14,13 +16,17 @@ namespace Blood_donate_App_Backend.Services
     {
         private readonly IRepository<int, User> _userRepository;
         private readonly IUserAuthDetailsRepository<int,UserAuthDetails> _userAuthDetailsRepository;
+        private readonly IRepository<int,CenterAdminRelation> _centerAdminRelationRepository;
+        private readonly IRepository<int, DonationCenter> _donationCenterRepository;
         private readonly ITokenService _tokenService;
 
-        public UserServiceBL(IRepository<int,User> userRepository , IUserAuthDetailsRepository<int, UserAuthDetails> userAuthDetailsRepository , ITokenService tokenService)
+        public UserServiceBL(IRepository<int,User> userRepository , IUserAuthDetailsRepository<int, UserAuthDetails> userAuthDetailsRepository , IRepository<int, DonationCenter> donationCenterRepository, ITokenService tokenService , IRepository<int, CenterAdminRelation> centerAdminRelationRepository)
         {
             _userRepository = userRepository;
             _userAuthDetailsRepository = userAuthDetailsRepository;
             _tokenService = tokenService;
+            _centerAdminRelationRepository = centerAdminRelationRepository;
+            _donationCenterRepository = donationCenterRepository;
         }
         public async Task<UserRegisterReturnDTO> RegisterUser(UserRegisterDTO userRegisterDTO)
         {
@@ -28,6 +34,8 @@ namespace Blood_donate_App_Backend.Services
             UserAuthDetails newUserAuth = null;
             User addedUser = null;
             UserAuthDetails addedUserAuth = null;
+            CenterAdminRelation centerAdminRelation = null;
+            CenterAdminRelation addedCenterAdminRelation = null;
             try
             {
                 newUser = await new UserRegisterDTOMapper().UserRegisterDTOtoUser(userRegisterDTO);
@@ -35,9 +43,31 @@ namespace Blood_donate_App_Backend.Services
                 if (isValidEmail)
                 {
                     addedUser = await _userRepository.Add(newUser);
-                    newUserAuth = await new UserRegisterDTOMapper().UserRegisterDTOtoUserAuthDetails(userRegisterDTO);
-                    addedUserAuth = await _userAuthDetailsRepository.Add(newUserAuth);
-                    return await new UserMapper().UsertoUserRegisterReturnDTO(addedUser);
+                    if(addedUser != null)
+                    {
+                        newUserAuth = await new UserRegisterDTOMapper().UserRegisterDTOtoUserAuthDetails(userRegisterDTO);
+                        addedUserAuth = await _userAuthDetailsRepository.Add(newUserAuth);
+                        if(addedUserAuth != null)
+                        {
+                            if (addedUser.Role == EnumClass.Roles.CenterAdmin.ToString())
+                            {
+                                centerAdminRelation = new CenterAdminRelation()
+                                {
+                                    UserId = newUser.Id,
+                                    CenterId = userRegisterDTO.CenterId
+                                };
+                                bool isCenterIdValid = await IsCenterIdValid(centerAdminRelation.CenterId);
+                                if (!isCenterIdValid) throw new DonationCenterNotavailableException(centerAdminRelation.CenterId);
+                                addedCenterAdminRelation = await _centerAdminRelationRepository.Add(centerAdminRelation);
+                                if (addedCenterAdminRelation == null) throw new CenterAdminRelationDetailsNotAddException(); 
+                            }
+                            return await new UserMapper().UsertoUserRegisterReturnDTO(addedUser);
+                        }
+                        throw new UserAuthDetailsNotAddException();
+                       
+                    }
+                    throw new UserNotAddException();
+                   
                 }
                 else
                 {
@@ -49,17 +79,22 @@ namespace Blood_donate_App_Backend.Services
             {
                 throw;
             }
+            catch (DonationCenterNotavailableException)
+            {
+                throw;
+            }
             catch(Exception ex)
             {
                 throw new UserNotRegisterException();
             }
             finally
             {
-                if(addedUser == null && addedUserAuth != null)
+                if (addedCenterAdminRelation == null && addedUser != null && addedUserAuth != null)
                 {
                     await RevertUserAuthRegister(addedUserAuth.Id);
+                    await RevertUserRegister(addedUser.Id);
                 }
-                else if (addedUser != null && addedUserAuth == null)
+                else if (addedUser != null && addedCenterAdminRelation == null && addedUserAuth == null)
                 {
                     await RevertUserRegister(addedUser.Id);
                 }
@@ -161,6 +196,34 @@ namespace Blood_donate_App_Backend.Services
             }
         }
 
+        private async Task RevertCenterAdminRelationRegister(int id)
+        {
+            try
+            {
+                await _centerAdminRelationRepository.Delete(id);
+            }
+            catch(Exception e)
+            {
+                throw new CenterAdminRelationsNotDeleteException();
+            }
+        }
+
+        private async Task<bool> IsCenterIdValid(int id)
+        {
+            try
+            {
+                var center = await _donationCenterRepository.GetById(id);
+                return true;
+            }
+            catch (BloodDonationCenterNotFoundException)
+            {
+                return false;
+            }
+            catch(Exception ex)
+            {
+                throw new BloodDonationCenterNotGetException();
+            }
+        }
        private async Task<bool> IsValidPassword(UserAuthDetails userAuthDetails , string password)
        {
             HMACSHA512 hMACSHA512 = new HMACSHA512(userAuthDetails.PasswordHashKey);
