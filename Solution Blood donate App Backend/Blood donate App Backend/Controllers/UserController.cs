@@ -18,16 +18,20 @@ namespace Blood_donate_App_Backend.Controllers
             _userService = userService;
         }
 
-        [Authorize]
+        [Authorize] 
         [HttpPut("user/updateProfile/{id}")]
-        [ProducesResponseType(typeof(UserUpdateReturnDTO) , StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SuccessResponseModel<UserUpdateReturnDTO>) , StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserUpdateReturnDTO>> Update([FromBody]UserUpdateDTO userUpdateDTO)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ValidationErrorModel(400, ModelState));
+                }
                 var result = await _userService.UpdateUser(userUpdateDTO);
                 var response = new SuccessResponseModel<UserUpdateReturnDTO>(200 , "User details updated successfully", result);
                 return Ok(response);

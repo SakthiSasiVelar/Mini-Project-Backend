@@ -19,7 +19,7 @@ namespace Blood_donate_App_Backend.Services
         }
 
 
-        public async Task<DonationCenterReturnDTO> addDonationCenter(DonationCenterDTO donationCenterDTO)
+        public async Task<DonationCenterReturnDTO> AddDonationCenter(DonationCenterDTO donationCenterDTO)
         {
             try
             {
@@ -32,6 +32,8 @@ namespace Blood_donate_App_Backend.Services
                 throw new BloodDonationCenterNotAddException();
             }
         }
+
+
 
         public async Task<DonationCenterAllBloodUnitsReturnDTO> GetDonationCenterBloodUnitsById(int centerId)
         {
@@ -57,6 +59,23 @@ namespace Blood_donate_App_Backend.Services
             catch(Exception ex)
             {
                 throw new GetDonationCenterBloodUnitsByIdException(centerId);
+            }
+        }
+
+        public async Task<List<DonationCenterReturnDTO>> GetDonationCenterByStateAndCity(GetDonationCenterByStateAndCityDTO donationCenterByCityDTO)
+        {
+            try
+            {
+                var listofAllCenters = await _donationCenterRepository.GetAll();
+                var listOfCentersByCity = listofAllCenters
+                        .Where(center => center.State.ToLower() == donationCenterByCityDTO.State.ToLower() && center.City.ToLower() == donationCenterByCityDTO.City.ToLower())
+                        .ToList();
+
+                return await new DonationCenterMapper().DonationCentertoDonationCenterReturnDTOList(listOfCentersByCity);
+            }
+            catch(Exception ex)
+            {
+                throw new GetDonationCenterByStateAndCityException();
             }
         }
     }

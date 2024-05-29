@@ -20,13 +20,17 @@ namespace Blood_donate_App_Backend.Controllers
 
         [Authorize(Roles = MemberRole)]
         [HttpPost("request/addRequest")]
-        [ProducesResponseType(typeof(BloodRequestReturnDTO) , StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SuccessResponseModel<BloodRequestReturnDTO>) , StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<BloodRequestReturnDTO>> AddRequest([FromBody]BloodRequestDTO bloodRequestDTO)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ValidationErrorModel(400, ModelState));
+                }
                 var result = await _requestService.RequestBlood(bloodRequestDTO);
                 var response = new SuccessResponseModel<BloodRequestReturnDTO>(201, "Request successfully created", result);
                 return Ok(response);
@@ -39,8 +43,7 @@ namespace Blood_donate_App_Backend.Controllers
 
         [Authorize(Roles = AdminRole)]
         [HttpGet("request/pendingRequest")]
-        [ProducesResponseType(typeof(List<RequestBloodDetailsForAdminDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SuccessResponseModel<List<RequestBloodDetailsForAdminDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<List<RequestBloodDetailsForAdminDTO>>> GetPendingRequest()
         {
@@ -58,8 +61,7 @@ namespace Blood_donate_App_Backend.Controllers
 
         [Authorize(Roles = MemberRole)]
         [HttpGet("request/approvedRequest")]
-        [ProducesResponseType(typeof(List<BloodRequestReturnDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SuccessResponseModel<List<BloodRequestReturnDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<List<BloodRequestReturnDTO>>> GetApprovedRequest()
         {

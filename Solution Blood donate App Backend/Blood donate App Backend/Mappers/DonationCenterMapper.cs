@@ -20,5 +20,16 @@ namespace Blood_donate_App_Backend.Mappers
             };
             return donationCenterReturnDTO;
         }
+
+        public async Task<List<DonationCenterReturnDTO>> DonationCentertoDonationCenterReturnDTOList (List<DonationCenter> donationCenterList)
+        {
+            List<DonationCenterReturnDTO> result = new List<DonationCenterReturnDTO>();
+            foreach(var  donationCenter in donationCenterList)
+            {
+                var obj = await DonationCentertoDonationCenterReturnDTO(donationCenter);
+                result.Add(obj);
+            }
+            return result;
+        }
     }
 }

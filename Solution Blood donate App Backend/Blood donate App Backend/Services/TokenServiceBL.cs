@@ -14,7 +14,7 @@ namespace Blood_donate_App_Backend.Services
 
         public TokenServiceBL(IConfiguration configuration)
         {
-            _secretKey = configuration.GetSection("TokenKey").GetSection("JWT").Value.ToString();
+            _secretKey = configuration["TokenKey:JWT"].ToString();
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
         }
         public async Task<string> GenerateToken(UserAuthDetails userAuthDetails)

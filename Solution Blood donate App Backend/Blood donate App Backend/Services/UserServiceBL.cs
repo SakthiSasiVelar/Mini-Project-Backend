@@ -141,7 +141,10 @@ namespace Blood_donate_App_Backend.Services
         {
             try
             {
+                var oldUser = await _userRepository.GetById(userUpdateDTO.Id);
                 var user = await new UserUpdateDTOMapper().UserUpdateDTOtoUser(userUpdateDTO);
+                user.Email = oldUser.Email;
+                user.Role = oldUser.Role;
                 var updatedUser = await _userRepository.Update(user);
                 return await new UserMapper().UsertoUpdateReturnDTO(updatedUser);
             }

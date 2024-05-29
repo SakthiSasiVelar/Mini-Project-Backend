@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blood donate App Backend", "Blood donate App Backend\Blood donate App Backend.csproj", "{8C3D7D31-AB2A-4703-AEBD-49624BD8564D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blood donate App Backend", "Blood donate App Backend\Blood donate App Backend.csproj", "{8C3D7D31-AB2A-4703-AEBD-49624BD8564D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloodDonateApp Unit Test", "TestProject1\BloodDonateApp Unit Test.csproj", "{0497897C-6B95-472A-B472-311E8BDD4848}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{8C3D7D31-AB2A-4703-AEBD-49624BD8564D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C3D7D31-AB2A-4703-AEBD-49624BD8564D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C3D7D31-AB2A-4703-AEBD-49624BD8564D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0497897C-6B95-472A-B472-311E8BDD4848}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0497897C-6B95-472A-B472-311E8BDD4848}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0497897C-6B95-472A-B472-311E8BDD4848}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0497897C-6B95-472A-B472-311E8BDD4848}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
