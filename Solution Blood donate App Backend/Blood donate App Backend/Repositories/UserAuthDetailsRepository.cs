@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blood_donate_App_Backend.Repositories
 {
-    public class UserAuthDetailsAuthDetailsRepository : IUserAuthDetailsRepository<int,UserAuthDetails>
+    public class UserAuthDetailsRepository : IUserAuthDetailsRepository<int,UserAuthDetails>
     {
         private readonly BloodDonateAppDbContext _dbContext;
-        public UserAuthDetailsAuthDetailsRepository(BloodDonateAppDbContext dbContext)
+        public UserAuthDetailsRepository(BloodDonateAppDbContext dbContext)
         {
             _dbContext = dbContext;
         }

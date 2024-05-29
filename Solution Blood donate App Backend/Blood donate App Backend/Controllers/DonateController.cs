@@ -21,13 +21,17 @@ namespace Blood_donate_App_Backend.Controllers
 
         [Authorize(Roles = MemberRole)]
         [HttpPost("donate/donateBlood/request/{requestId}")]
-        [ProducesResponseType(typeof(DonateBloodForRequestReturnDTO), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SuccessResponseModel<DonateBloodForRequestReturnDTO>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<DonateBloodForRequestReturnDTO>> AddDonateBloodDetailsForRequester([FromBody]DonateBloodForRequestDTO donateBloodForRequestDTO)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ValidationErrorModel(400, ModelState));
+                }
                 var result = await _donateService.DonateBloodToRequester(donateBloodForRequestDTO);
                 var response = new SuccessResponseModel<DonateBloodForRequestReturnDTO>(201, "Donation Blood Details added successfully" , result);
                 return Ok(response);
@@ -40,13 +44,17 @@ namespace Blood_donate_App_Backend.Controllers
 
        [Authorize(Roles = MemberRole)]
         [HttpPost("donate/donateBlood/center/{centerId}")]
-        [ProducesResponseType(typeof(DonateBloodForCenterReturnDTO), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SuccessResponseModel<DonateBloodForCenterReturnDTO>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<DonateBloodForCenterReturnDTO>> AddDonateBloodDetailsForCenter([FromBody] DonateBloodForCenterDTO donateBloodForCenterDTO)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ValidationErrorModel(400, ModelState));
+                }
                 var result = await _donateService.DonateBloodToCenter(donateBloodForCenterDTO);
                 var response = new SuccessResponseModel<DonateBloodForCenterReturnDTO>(201, "Donation Blood Details added successfully", result);
                 return Ok(response);
@@ -59,13 +67,17 @@ namespace Blood_donate_App_Backend.Controllers
 
         [Authorize(Roles = MemberRole)]
         [HttpGet("donate/notDonateBloodList/request/{requestId}")]
-        [ProducesResponseType(typeof(DonateBloodForRequestReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SuccessResponseModel<List<DonateBloodForRequestReturnDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<List<DonateBloodForRequestReturnDTO>>> GetNotdonateBloodList(int requestId)
         {
             try
             {
+                if(requestId <= 0)
+                {
+                    return BadRequest(new ErrorModel(400, "invalid or missing id"));
+                }
                 var result = await _donateService.NotDonatedBloodDetailsListForRequester(requestId);
                 var response = new SuccessResponseModel<List<DonateBloodForRequestReturnDTO>>(200, "Not Donated Blood List fetched successfully", result);
                 return Ok(response);
@@ -78,13 +90,17 @@ namespace Blood_donate_App_Backend.Controllers
 
         [Authorize(Roles = CenterAdmin)]
         [HttpGet("donate/notDonateBloodList/center/{centerId}")]
-        [ProducesResponseType(typeof(DonateBloodForCenterReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SuccessResponseModel<List<DonateBloodForCenterReturnDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<List<DonateBloodForCenterReturnDTO>>> GetNotdonateBloodListForCenter(int centerId)
         {
             try
             {
+                if(centerId <= 0)
+                {
+                    return BadRequest(new ErrorModel(400, "invalid or missing id"));
+                }
                 var result = await _donateService.NotDonatedBloodDetailsListForCenter(centerId);
                 var response = new SuccessResponseModel<List<DonateBloodForCenterReturnDTO>>(200, "Not Donated Blood List fetched successfully", result);
                 return Ok(response);
@@ -97,7 +113,7 @@ namespace Blood_donate_App_Backend.Controllers
 
         [Authorize(Roles = MemberRole)]
         [HttpPut("donate/request/approveDonation/{donationId}")]
-        [ProducesResponseType(typeof(DonateBloodForApproveDonationReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SuccessResponseModel<DonateBloodForApproveDonationReturnDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
@@ -105,6 +121,10 @@ namespace Blood_donate_App_Backend.Controllers
         {
             try
             {
+                if(donationId <= 0)
+                {
+                    return BadRequest(new ErrorModel(400, "invalid or missing id"));
+                }
                 var result = await _donateService.ApproveDonationByRequester(donationId);
                 var response = new SuccessResponseModel<DonateBloodForApproveDonationReturnDTO>(200, "Donation Blood Details Approved and donated successfully", result);
                 return Ok(response);    
@@ -125,7 +145,7 @@ namespace Blood_donate_App_Backend.Controllers
 
         [Authorize(Roles = CenterAdmin)]
         [HttpPut("donate/center/approveDonation/{donationId}")]
-        [ProducesResponseType(typeof(DonateBloodForApproveDonationByCenterReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SuccessResponseModel<DonateBloodForApproveDonationByCenterReturnDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
@@ -133,6 +153,10 @@ namespace Blood_donate_App_Backend.Controllers
         {
             try
             {
+                if (donationId <= 0)
+                {
+                    return BadRequest(new ErrorModel(400, "invalid or missing id"));
+                }
                 var result = await _donateService.ApproveDonationByCenter(donationId);
                 var response = new SuccessResponseModel<DonateBloodForApproveDonationByCenterReturnDTO>(200, "Donation Blood Details Approved and donated successfully", result);
                 return Ok(response);

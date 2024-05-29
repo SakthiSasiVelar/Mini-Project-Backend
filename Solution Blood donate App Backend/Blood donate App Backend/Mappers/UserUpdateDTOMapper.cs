@@ -10,9 +10,7 @@ namespace Blood_donate_App_Backend.Mappers
             User user = new User();
             user.Id = userUpdateDTO.Id;
             user.Name = userUpdateDTO.Name;
-            user.Email = userUpdateDTO.Email;
             user.Address = userUpdateDTO.Address;
-            user.Role = userUpdateDTO.Role;
             user.Gender = userUpdateDTO.Gender;
             user.City = userUpdateDTO.City;
             user.PostalCode = userUpdateDTO.PostalCode;

@@ -21,7 +21,7 @@ namespace Blood_donate_App_Backend.Controllers
 
         [Authorize(Roles = AdminRole)]
         [HttpPut("admin/activateAdmin/{id}")]
-        [ProducesResponseType(typeof(ActivateAdminReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SuccessResponseModel<ActivateAdminReturnDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
@@ -29,6 +29,10 @@ namespace Blood_donate_App_Backend.Controllers
         {
             try
             {
+                if (id <= 0)
+                {
+                    return BadRequest(new ErrorModel(400, "invalid or missing id"));
+                }
                 var result = await _adminService.ActivateAdmin(id);
                 var response = new SuccessResponseModel<ActivateAdminReturnDTO>(200, "Account has been activated successfully", result);
                 return Ok(response);
@@ -50,7 +54,7 @@ namespace Blood_donate_App_Backend.Controllers
 
         [Authorize(Roles = AdminRole)]
         [HttpPut("request/approveRequest/{id}")]
-        [ProducesResponseType(typeof(ApprovedBloodRequestReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SuccessResponseModel<ApprovedBloodRequestReturnDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
@@ -58,6 +62,10 @@ namespace Blood_donate_App_Backend.Controllers
         {
             try
             {
+                if(id <= 0)
+                {
+                    return BadRequest(new ErrorModel(400, "invalid or missing id"));
+                }
                 var result = await _adminService.ApproveRequest(id);
                 var response = new SuccessResponseModel<ApprovedBloodRequestReturnDTO>(200, "Request approved successfully", result);
                 return Ok(response);
@@ -74,14 +82,18 @@ namespace Blood_donate_App_Backend.Controllers
 
         [Authorize(Roles = AdminRole)]
         [HttpPut("request/rejectRequest/{id}")]
-        [ProducesResponseType(typeof(RejectBloodRequestReturnDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SuccessResponseModel<RejectBloodRequestReturnDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<RejectBloodRequestReturnDTO>> RejectRequest([FromBody] RejectBloodRequestDTO rejectBloodRequestDTO )
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ValidationErrorModel(400, ModelState));
+                }
                 var result = await _adminService.RejectRequest(rejectBloodRequestDTO);
                 var response = new SuccessResponseModel<RejectBloodRequestReturnDTO>(200, "Request rejected successfully", result);
                 return Ok(response);

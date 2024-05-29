@@ -32,6 +32,8 @@ namespace Blood_donate_App_Backend.Contexts
             modelBuilder.Entity<RequestBlood>().HasKey(request => request.Id);
             modelBuilder.Entity<DonateBlood>().HasKey(donate => donate.Id);
 
+           
+
             modelBuilder.Entity<User>()
                 .Property(u => u.Email)
                 .ValueGeneratedNever();
