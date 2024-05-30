@@ -2,6 +2,7 @@
 using Blood_donate_App_Backend.Exceptions.Admin_Exception;
 using Blood_donate_App_Backend.Exceptions.BloodRequest_Exception;
 using Blood_donate_App_Backend.Exceptions.UserAuthDetails_Exception;
+using Blood_donate_App_Backend.Exceptions.Users_Exception;
 using Blood_donate_App_Backend.Interfaces;
 using Blood_donate_App_Backend.Mappers;
 using Blood_donate_App_Backend.Models;
@@ -36,7 +37,7 @@ namespace Blood_donate_App_Backend.Services
             {
                 throw;
             }
-            catch(UserAuthDetailsListNotFoundException)
+            catch(UserAuthDetailsNotFoundByEmailException)
             {
                 throw;
             }
@@ -85,7 +86,7 @@ namespace Blood_donate_App_Backend.Services
             }
             catch (Exception ex)
             {
-                throw new RequestApprovalException(rejectBloodRequestDTO.Id);
+                throw new RequestRejectionException(rejectBloodRequestDTO.Id);
             }
         }
     }
