@@ -72,7 +72,7 @@ namespace Blood_donate_App_Backend
 
             #region Repository
             builder.Services.AddScoped<IRepository<int, User>, UserRepository>();
-            builder.Services.AddScoped<IUserAuthDetailsRepository<int, UserAuthDetails>, UserAuthDetailsAuthDetailsRepository>();
+            builder.Services.AddScoped<IUserAuthDetailsRepository<int, UserAuthDetails>, UserAuthDetailsRepository>();
             builder.Services.AddScoped<IRepository<int,RequestBlood> , RequestBloodDetailsRepository>();
             builder.Services.AddScoped<IRepository<int,DonateBlood>, DonateBloodDetailsRepository>();
             builder.Services.AddScoped<IRepository<int,DonationCenter>, DonationCenterRepository>();

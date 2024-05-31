@@ -40,34 +40,24 @@ namespace Blood_donate_App_Backend.Services
             {
                 newUser = await new UserRegisterDTOMapper().UserRegisterDTOtoUser(userRegisterDTO);
                 bool isValidEmail = await IsValidEmail(newUser);
-                if (isValidEmail)
+                if (isValidEmail)                
                 {
                     addedUser = await _userRepository.Add(newUser);
-                    if(addedUser != null)
+                    newUserAuth = await new UserRegisterDTOMapper().UserRegisterDTOtoUserAuthDetails(userRegisterDTO);
+                    addedUserAuth = await _userAuthDetailsRepository.Add(newUserAuth);                        
+                    if (addedUser.Role == EnumClass.Roles.CenterAdmin.ToString())
                     {
-                        newUserAuth = await new UserRegisterDTOMapper().UserRegisterDTOtoUserAuthDetails(userRegisterDTO);
-                        addedUserAuth = await _userAuthDetailsRepository.Add(newUserAuth);
-                        if(addedUserAuth != null)
+                        centerAdminRelation = new CenterAdminRelation()
                         {
-                            if (addedUser.Role == EnumClass.Roles.CenterAdmin.ToString())
-                            {
-                                centerAdminRelation = new CenterAdminRelation()
-                                {
-                                    UserId = newUser.Id,
-                                    CenterId = userRegisterDTO.CenterId
-                                };
-                                bool isCenterIdValid = await IsCenterIdValid(centerAdminRelation.CenterId);
-                                if (!isCenterIdValid) throw new DonationCenterNotavailableException(centerAdminRelation.CenterId);
-                                addedCenterAdminRelation = await _centerAdminRelationRepository.Add(centerAdminRelation);
-                                if (addedCenterAdminRelation == null) throw new CenterAdminRelationDetailsNotAddException(); 
-                            }
-                            return await new UserMapper().UsertoUserRegisterReturnDTO(addedUser);
-                        }
-                        throw new UserAuthDetailsNotAddException();
-                       
+                            UserId = newUser.Id,
+                            CenterId = userRegisterDTO.CenterId
+                        };
+                        bool isCenterIdValid = await IsCenterIdValid(centerAdminRelation.CenterId);
+                        if (!isCenterIdValid) throw new DonationCenterNotavailableException(centerAdminRelation.CenterId);
+                        addedCenterAdminRelation = await _centerAdminRelationRepository.Add(centerAdminRelation);
+                        if (addedCenterAdminRelation == null) throw new CenterAdminRelationDetailsNotAddException(); 
                     }
-                    throw new UserNotAddException();
-                   
+                    return await new UserMapper().UsertoUserRegisterReturnDTO(addedUser);                  
                 }
                 else
                 {
@@ -77,19 +67,19 @@ namespace Blood_donate_App_Backend.Services
             }
             catch (EmailAlreadyTakenException)
             {
-                throw;
+                throw ;
             }
             catch (DonationCenterNotavailableException)
             {
                 throw;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw new UserNotRegisterException();
             }
             finally
             {
-                if (addedCenterAdminRelation == null && addedUser != null && addedUserAuth != null)
+                if (addedCenterAdminRelation == null && addedUser != null && addedUserAuth != null && addedUser.Role == EnumClass.Roles.CenterAdmin.ToString())
                 {
                     await RevertUserAuthRegister(addedUserAuth.Id);
                     await RevertUserRegister(addedUser.Id);
@@ -196,18 +186,6 @@ namespace Blood_donate_App_Backend.Services
             catch (Exception ex)
             {
                 throw new UserAuthDetailsNotDeleteException();
-            }
-        }
-
-        private async Task RevertCenterAdminRelationRegister(int id)
-        {
-            try
-            {
-                await _centerAdminRelationRepository.Delete(id);
-            }
-            catch(Exception e)
-            {
-                throw new CenterAdminRelationsNotDeleteException();
             }
         }
 
