@@ -23,6 +23,7 @@ namespace Blood_donate_App_Backend.Models.DTOs
         public string Urgency { get; set; }
 
         [Required(ErrorMessage = "Request Contact Number is required")]
+        [RegularExpression(@"^[0-9]{10}$", ErrorMessage = "Request Contact Number must be a 10-digit number.")]
         public string RequestedContactNumber { get; set; }
 
         [Required(ErrorMessage = "Request Date Time is required")]
@@ -41,6 +42,7 @@ namespace Blood_donate_App_Backend.Models.DTOs
         public string DoctorName { get; set; }
 
         [Required(ErrorMessage = "Doctor contact number is required")]
+        [RegularExpression(@"^[0-9]{10}$", ErrorMessage = "Doctor contact number must be a 10-digit number.")]
         public string DoctorContactNumber { get; set; }
     }
 }

@@ -34,13 +34,9 @@ namespace Blood_donate_App_Backend.Repositories
             try
             {
                 var entity = await GetById(id);
-                if (entity != null)
-                {
-                    _dbContext.Inventory.Remove(entity);
-                    await _dbContext.SaveChangesAsync();
-                    return entity;
-                }
-                throw new InventoryNotFoundException(id);
+                _dbContext.Inventory.Remove(entity);
+                await _dbContext.SaveChangesAsync();
+                return entity;
             }
             catch (InventoryNotFoundException)
             {
@@ -90,13 +86,12 @@ namespace Blood_donate_App_Backend.Repositories
             try
             {
                 var Inventory = await GetById(entity.Id);
-                if (Inventory != null)
-                {
-                    _dbContext.Inventory.Update(entity);
-                    await _dbContext.SaveChangesAsync();
-                    return entity;
-                }
-                throw new InventoryNotFoundException(entity.Id);
+                _dbContext.Entry(Inventory).State = EntityState.Detached;
+                _dbContext.Attach(entity);
+                _dbContext.Entry(entity).State = EntityState.Modified;
+                await _dbContext.SaveChangesAsync();
+                return entity;
+              
             }
             catch (InventoryNotFoundException)
             {

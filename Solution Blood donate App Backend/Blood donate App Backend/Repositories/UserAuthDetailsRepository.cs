@@ -35,13 +35,10 @@ namespace Blood_donate_App_Backend.Repositories
             try
             {
                 var entity = await GetById(id);
-                if (entity != null)
-                {
-                    _dbContext.UsersAuthDetails.Remove(entity);
-                    await _dbContext.SaveChangesAsync();
-                    return entity;
-                }
-                throw new UserAuthDetailsNotFoundException(id);
+                _dbContext.UsersAuthDetails.Remove(entity);
+                await _dbContext.SaveChangesAsync();
+                return entity;
+
             }
             catch (UserAuthDetailsNotFoundException)
             {
@@ -112,13 +109,9 @@ namespace Blood_donate_App_Backend.Repositories
             try
             {
                 var UserAuthDetails = await GetById(entity.Id);
-                if (UserAuthDetails != null)
-                {
-                    _dbContext.UsersAuthDetails.Update(entity);
-                    await _dbContext.SaveChangesAsync();
-                    return entity;
-                }
-                throw new UserAuthDetailsNotFoundException(entity.Id);
+                _dbContext.UsersAuthDetails.Update(entity);
+                await _dbContext.SaveChangesAsync();
+                return entity; 
             }
             catch (UserAuthDetailsNotFoundException)
             {

@@ -34,13 +34,9 @@ namespace Blood_donate_App_Backend.Repositories
             try
             {
                 var entity = await GetById(id);
-                if (entity != null)
-                {
-                    _dbContext.CenterAdminRelations.Remove(entity);
-                    await _dbContext.SaveChangesAsync();
-                    return entity;
-                }
-                throw new CenterAdminRelationsNotFoundException(id);
+                _dbContext.CenterAdminRelations.Remove(entity);
+                await _dbContext.SaveChangesAsync();
+                return entity; 
             }
             catch (CenterAdminRelationsNotFoundException)
             {
@@ -90,13 +86,11 @@ namespace Blood_donate_App_Backend.Repositories
             try
             {
                 var CenterAdminRelation = await GetById(entity.Id);
-                if (CenterAdminRelation != null)
-                {
-                    _dbContext.CenterAdminRelations.Update(entity);
-                    await _dbContext.SaveChangesAsync();
-                    return entity;
-                }
-                throw new CenterAdminRelationsNotFoundException(entity.Id);
+                _dbContext.Entry(CenterAdminRelation).State = EntityState.Detached;
+                _dbContext.Attach(entity);
+                _dbContext.Entry(entity).State = EntityState.Modified;
+                await _dbContext.SaveChangesAsync();
+                return entity;
             }
             catch (CenterAdminRelationsNotFoundException)
             {

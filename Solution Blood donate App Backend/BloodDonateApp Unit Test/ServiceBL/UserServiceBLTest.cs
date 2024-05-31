@@ -139,7 +139,7 @@ namespace BloodDonateApp_Unit_Test.ServiceBL
                 State = "tamil nadu",
                 Gender = "Male",
                 DateOfBirth = DateTime.Now,
-                Role = "Center Admin",
+                Role = "CenterAdmin",
                 CenterId = 101,
                 Password = "dhoni123"
             };
@@ -161,7 +161,7 @@ namespace BloodDonateApp_Unit_Test.ServiceBL
                 State = "tamil nadu",
                 Gender = "Male",
                 DateOfBirth = DateTime.Now,
-                Role = "Center Admin",
+                Role = "CenterAdmin",
                 CenterId = 1000,
                 Password = "dhoni123"
             };
@@ -369,7 +369,7 @@ namespace BloodDonateApp_Unit_Test.ServiceBL
                 State = "tamil nadu",
                 Gender = "Male",
                 DateOfBirth = DateTime.Now,
-                Role = "Center Admin",
+                Role = "CenterAdmin",
                 CenterId = 101,
                 Password = "dhoni123"
             };

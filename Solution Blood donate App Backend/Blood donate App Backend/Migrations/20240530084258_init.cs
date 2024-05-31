@@ -118,18 +118,21 @@ namespace Blood_donate_App_Backend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     BloodType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PatientName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RhFactor = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UnitsNeeded = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UnitsCollected = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Urgency = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RequestedContactNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RequestedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Approved_Request = table.Column<bool>(type: "bit", nullable: false),
+                    RequestApprovalStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FulfillmentStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     HospitalName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     HospitalAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DoctorName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DoctorContactNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    DoctorContactNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RejectReason = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -207,8 +210,7 @@ namespace Blood_donate_App_Backend.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_CenterAdminRelations_CenterId",
                 table: "CenterAdminRelations",
-                column: "CenterId",
-                unique: true);
+                column: "CenterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CenterAdminRelations_UserId",
