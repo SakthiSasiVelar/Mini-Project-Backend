@@ -23,7 +23,7 @@ namespace Blood_donate_App_Backend.Mappers
             };
             var role = userRegisterDTO.Role.ToLower();
             if(role == "member") user.Role = EnumClass.Roles.Member.ToString();
-            else if(role == "center admin") user.Role = EnumClass.Roles.CenterAdmin.ToString();
+            else if(role == "centeradmin") user.Role = EnumClass.Roles.CenterAdmin.ToString();
             else if(role == "admin")user.Role = EnumClass.Roles.Admin.ToString();
             return user;
         }
@@ -39,7 +39,7 @@ namespace Blood_donate_App_Backend.Mappers
             else userAuthDetails.IsActive = false;
             var role = userRegisterDTO.Role.ToLower();
             if (role == "member") userAuthDetails.Role = EnumClass.Roles.Member.ToString();
-            else if (role == "center admin") userAuthDetails.Role = EnumClass.Roles.CenterAdmin.ToString();
+            else if (role == "centeradmin") userAuthDetails.Role = EnumClass.Roles.CenterAdmin.ToString();
             else if (role == "admin") userAuthDetails.Role = EnumClass.Roles.Admin.ToString();
             return userAuthDetails;
         }

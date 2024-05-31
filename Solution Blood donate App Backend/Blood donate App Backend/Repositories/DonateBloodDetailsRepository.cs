@@ -33,13 +33,9 @@ namespace Blood_donate_App_Backend.Repositories
             try
             {
                 var entity = await GetById(id);
-                if (entity != null)
-                {
-                    _dbContext.DonateDetails.Remove(entity);
-                    await _dbContext.SaveChangesAsync();
-                    return entity;
-                }
-                throw new BloodDonateDetailsNotFoundException(id);
+                _dbContext.DonateDetails.Remove(entity);
+                await _dbContext.SaveChangesAsync();
+                return entity; 
             }
             catch (BloodDonateDetailsNotFoundException)
             {
@@ -88,14 +84,10 @@ namespace Blood_donate_App_Backend.Repositories
         {
             try
             {
-                var DonateBlood = await GetById(entity.Id);
-                if (DonateBlood != null)
-                {
-                    _dbContext.DonateDetails.Update(entity);
-                    await _dbContext.SaveChangesAsync();
-                    return entity;
-                }
-                throw new BloodDonateDetailsNotFoundException(entity.Id);
+                var DonateBlood = await GetById(entity.Id); 
+                _dbContext.DonateDetails.Update(entity);
+                await _dbContext.SaveChangesAsync();
+                return entity; 
             }
             catch (BloodDonateDetailsNotFoundException)
             {

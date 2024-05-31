@@ -12,14 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blood_donate_App_Backend.Migrations
 {
     [DbContext(typeof(BloodDonateAppDbContext))]
-    [Migration("20240527054417_changemodalRejectReason")]
-    partial class changemodalRejectReason
+    [Migration("20240530084258_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.30")
+                .HasAnnotation("ProductVersion", "6.0.31")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -40,8 +40,7 @@ namespace Blood_donate_App_Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CenterId")
-                        .IsUnique();
+                    b.HasIndex("CenterId");
 
                     b.HasIndex("UserId");
 
@@ -357,8 +356,8 @@ namespace Blood_donate_App_Backend.Migrations
             modelBuilder.Entity("Blood_donate_App_Backend.Models.CenterAdminRelation", b =>
                 {
                     b.HasOne("Blood_donate_App_Backend.Models.DonationCenter", "DonationCenter")
-                        .WithOne("centerAdminRelation")
-                        .HasForeignKey("Blood_donate_App_Backend.Models.CenterAdminRelation", "CenterId")
+                        .WithMany("Admins")
+                        .HasForeignKey("CenterId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -445,12 +444,11 @@ namespace Blood_donate_App_Backend.Migrations
 
             modelBuilder.Entity("Blood_donate_App_Backend.Models.DonationCenter", b =>
                 {
+                    b.Navigation("Admins");
+
                     b.Navigation("BloodDonations");
 
                     b.Navigation("InventoryHistory");
-
-                    b.Navigation("centerAdminRelation")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Blood_donate_App_Backend.Models.RequestBlood", b =>

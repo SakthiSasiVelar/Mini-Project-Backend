@@ -34,13 +34,9 @@ namespace Blood_donate_App_Backend.Repositories
             try
             {
                 var entity = await GetById(id);
-                if(entity != null)
-                {
-                    _dbContext.Users.Remove(entity);
-                    await _dbContext.SaveChangesAsync();
-                    return entity;
-                }
-                throw new UserNotFoundException(id);
+                _dbContext.Users.Remove(entity);
+                await _dbContext.SaveChangesAsync();
+                return entity;
             }
             catch (UserNotFoundException)
             {
@@ -92,16 +88,12 @@ namespace Blood_donate_App_Backend.Repositories
             try
             {
                 var existingUser = await GetById(entity.Id);
-                if(existingUser != null)
-                {
-                    _dbContext.Entry(existingUser).State = EntityState.Detached;
-                    _dbContext.Attach(entity);
-                    _dbContext.Entry(entity).State = EntityState.Modified;
-                    await _dbContext.SaveChangesAsync();
-                    var user = await GetById(entity.Id);
-                    return entity;
-                }
-                throw new UserNotFoundException(entity.Id);
+                _dbContext.Entry(existingUser).State = EntityState.Detached;
+                _dbContext.Attach(entity);
+                _dbContext.Entry(entity).State = EntityState.Modified;
+                await _dbContext.SaveChangesAsync();
+                var user = await GetById(entity.Id);
+                return entity;
             }
             catch(UserNotFoundException)
             {
